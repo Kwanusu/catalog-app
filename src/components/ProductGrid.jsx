@@ -22,3 +22,4 @@ export const ProductGrid = ({products, loading}) => {
     </div>
     );
 };
+
