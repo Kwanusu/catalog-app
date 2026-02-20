@@ -1,47 +1,80 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
-import { ShoppingCart, Eye } from "lucide-react";
+import { ShoppingCart, Eye, Heart, Star } from "lucide-react";
+import { QuickViewModal } from "./QuickViewModal";
 
 export const ProductCard = ({ product }) => (
-  <Card className="group flex flex-col h-full overflow-hidden border-zinc-200 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 bg-card">
+  <Card className="group flex flex-col h-full overflow-hidden border-slate-200 transition-all duration-300 hover:shadow-xl bg-white ring-1 ring-slate-200/50">
     <CardHeader className="p-0 relative">
-      <div className="aspect-[4/5] bg-zinc-100 flex items-center justify-center overflow-hidden">
+      {/* Product Image Container */}
+      <div className="aspect-square bg-[#f8f8f8] flex items-center justify-center overflow-hidden">
         <img 
           src={product.thumbnail} 
           alt={product.title} 
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+          className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105" 
         />
-        {/* Sleek Overlay */}
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-           <Button variant="secondary" size="icon" className="rounded-full shadow-xl"><Eye className="h-4 w-4" /></Button>
+        
+        {/* Wishlist Button */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="absolute top-2 right-2 rounded-full bg-white/80 backdrop-blur-sm text-slate-400 hover:text-rose-500 hover:bg-white shadow-sm"
+        >
+          <Heart className="h-4 w-4" />
+        </Button>
+
+        {/* Quick Actions Overlay */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 translate-y-12 group-hover:translate-y-0 transition-transform duration-300">
+          <QuickViewModal product={product}>
+            <Button 
+              type="button"
+              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-lg gap-2 px-4 h-9 text-xs"
+            >
+              <Eye className="h-3.5 w-3.5" /> Quick View
+            </Button>
+          </QuickViewModal>
         </div>
       </div>
-      <Badge className="absolute top-3 left-3 bg-white/90 text-zinc-900 backdrop-blur-sm hover:bg-white">
-        {product.category}
-      </Badge>
+      <div className="absolute top-0 left-0 bg-orange-500 text-white px-3 py-1 text-[11px] font-black tracking-tighter rounded-br-xl shadow-md">
+        -{Math.round(product.discountPercentage)}%
+      </div>
     </CardHeader>
 
-    <CardContent className="p-5 flex-grow">
+    <CardContent className="p-4 flex-grow">
+      {/* Category & Rating Row */}
       <div className="flex justify-between items-center mb-2">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">{product.brand || 'Premium Selection'}</p>
-        <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-          {Math.round(product.discountPercentage)}% OFF
+        <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded">
+          {product.category}
         </span>
+        <div className="flex items-center gap-1 text-amber-500">
+          <Star className="h-3 w-3 fill-current" />
+          <span className="text-xs font-bold text-slate-700">{product.rating || '4.8'}</span>
+        </div>
       </div>
-      <CardTitle className="text-lg font-semibold leading-tight mb-2 group-hover:text-primary transition-colors">
+
+      <CardTitle className="text-base font-bold text-slate-800 line-clamp-2 min-h-[2.5rem] mb-2 group-hover:text-orange-600 transition-colors">
         {product.title}
       </CardTitle>
-      <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-black text-zinc-900">${product.price}</span>
-        <span className="text-sm text-muted-foreground line-through decoration-zinc-400">
-          ${Math.round(product.price * (1 + product.discountPercentage / 100))}
-        </span>
+
+      {/* Pricing Engine */}
+      <div className="flex flex-col mt-auto">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl font-black text-slate-900">${product.price}</span>
+          <span className="text-sm text-slate-400 line-through">
+            ${Math.round(product.price * (1.2))}
+          </span>
+        </div>
+        <p className="text-[11px] text-emerald-600 font-medium mt-1">
+          ✓ Free shipping on orders over $50
+        </p>
       </div>
     </CardContent>
 
-    <CardFooter className="p-5 pt-0 border-t border-zinc-100 mt-auto pt-4">
-      <Button className="w-full gap-2 font-bold tracking-wide uppercase text-xs cursor-pointer" size="lg">
+    <CardFooter className="p-4 pt-0">
+      <Button 
+        className="w-full gap-3 font-bold bg-orange-500 hover:bg-orange-600 text-white shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] h-11 transition-all"
+      >
         <ShoppingCart className="h-4 w-4" /> Add to Cart
       </Button>
     </CardFooter>
