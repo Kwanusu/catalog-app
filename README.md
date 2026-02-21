@@ -1,98 +1,89 @@
-# Modern Product Catalog
+# Product Catalog
 
-A high-performance product discovery interface built with **React**, **Tailwind CSS v4**, and **Shadcn/UI**. This project demonstrates professional frontend architecture, including custom hooks for data orchestration and a service-layer pattern for API communication.
+A high-performance product discovery interface built with **React**, **Tailwind CSS v4**, and **Shadcn/UI**. This project demonstrates professional frontend architecture, including global state management via Context API, custom hooks for data orchestration, and custom Tailwind variants.
 
-## Technical Stack
+## 1. Technical Stack
 
 * **Framework:** [Vite](https://vitejs.dev/) (React)
-* **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (Vite-integrated)
+* **Styling:** [Tailwind CSS v4](https://tailwindcss.com/) (Using `@custom-variant`)
+* **State Management:** React Context API (Global Theme & Persistence)
 * **UI Components:** [Shadcn/UI](https://ui.shadcn.com/)
-* **Icons:** [Lucide React](https://lucide.dev/)
-* **API:** [DummyJSON](https://dummyjson.com/) (Robust e-commerce mock data)
+* **Icons:** [Lucide React](https://lucide.dev/) (PascalCase exports)
+* **API:** [DummyJSON](https://dummyjson.com/)
 
-## Architecture Decisions
+---
 
-To ensure scalability and maintainability, this project follows an **Atomic Design-lite** structure:
+## 2. Architecture Decisions
 
-### 1. Service Layer (`/src/services`)
+### Global Theme Context (`/src/context`)
 
-Abstracts the `fetch` logic away from components. This makes it easy to swap data sources (e.g., moving from DummyJSON to a production backend) without touching the UI.
+The `ThemeProvider` manages the application's visual state. It synchronizes with `localStorage` and system settings (`prefers-color-scheme`). By injecting the `.dark` class into the `document.documentElement`, it enables the v4 custom variant logic.
 
-### 2. Custom Hooks (`/src/hooks`)
+### Headless Logic Layer (`/src/hooks`)
 
-The `useProducts` hook acts as a "Headless Controller." It manages:
+The `useProducts` hook handles the heavy lifting. It fetches a base dataset and then uses `useMemo` to derive specific "Collections" (**Deals** and **New Arrivals**) without redundant API calls.
 
-* **State:** Loading, Error, and Data states.
-* **Performance:** Uses `useMemo` for client-side search filtering to prevent unnecessary re-renders.
+### UI Strategy
 
-### 3. Component Hierarchy
+* **Adaptive Skeletons:** Loading states are color-synced to the current theme to prevent "flash" effects.
+* **Image Safe Zones:** Dark mode uses internal rounded containers to isolate product photos, ensuring white-background images remain aesthetically pleasing in dark themes.
 
-* **UI Components:** Low-level, stateless primitives (Button, Card, Input) managed via Shadcn.
-* **Feature Components:** High-level components (ProductGrid, ProductCard) that consume data and logic.
+---
 
-## Installation & Setup
-
-1. **Clone the repository:**
-```bash
-git clone https://github.com/Kwanusu/catalog-app.git
-cd catalog-app
-
-```
-
-2. **Install dependencies:**
-```bash
-npm install
-
-```
-
-3. **Run Development Server:**
-```bash
-npm run dev
-
-```
-
-## Key Features
-
-* **Real-time Search:** Filter products instantly as you type.
-* **Responsive Grid:** Fluid layout that adapts from mobile to ultra-wide screens.
-* **Graceful Loading:** Integrated **Lucide Spinner** for enhanced User Experience (UX).
-* **Type Safety:** Configured with `tsconfig.json` path aliases (`@/`) for clean imports.
-
-## Project Structure
+## 3. Project Structure
 
 ```text
 src/
 ├── components/
-│   ├── ui/             # Shadcn primitives (Button, Input, etc.)
-│   ├── ProductCard.jsx # Individual product display
-│   └── ProductGrid.jsx # Layout grid & loading logic
+│   ├── ui/             # Shadcn primitives (Button, Card, Input, etc.)
+│   ├── ProductCard.jsx # Card with dynamic badging & theme logic
+│   ├── ProductGrid.jsx # Grid with adaptive skeleton loaders
+│   └── QuickViewModal.jsx # Detail modal with dark-mode safe zones
+├── context/
+│   └── ThemeContext.jsx # Global dark/light mode state & persistence
 ├── hooks/
-│   └── useProducts.js  # Data fetching & filtering logic
-├── services/
-│   └── api.js          # API configuration
-├── App.jsx             # Main application entry
-└── index.css           # Tailwind v4 configuration & variables
+│   └── useProducts.js  # Multi-collection data orchestrator (Memoized)
+├── App.jsx             # View management & Layout orchestration
+└── index.css           # Tailwind v4 configuration & custom variants
 
 ```
 
 ---
 
-## Product Catalog Rubric
+## 4. Technical Rubric
 
-This rubric evaluates a student's ability to build a modular, performant, and visually polished React application.
+This rubric evaluates the ability to build a modular, performant, and visually polished React application.
 
-| Category | Excellent (4 pts) | Satisfactory (3 pts) | Developing (2 pts) | Needs Improvement (1 pt) |
-| --- | --- | --- | --- | --- |
-| **Architecture** | Clear separation of concerns (Services, Hooks, Components). Uses `@/` aliases correctly. | Components are modular, but some logic is leaked into the main `App.jsx`. | Folder structure exists but is inconsistent. No service layer used. | All code is in one or two files (Mega-components). |
-| **Custom Hooks** | `useProducts` manages loading, error, and filtering logic efficiently using `useMemo`. | Hook handles fetching and state, but filtering logic is done in the UI layer. | Use of `useEffect` is present but contains complex, unoptimized logic. | No custom hooks used; data fetching lives directly in components. |
-| **UI / Shadcn** | Seamless integration of Shadcn components. High attention to spacing, typography, and responsive grid. | Shadcn components used, but layout breaks on some screen sizes. | Standard HTML elements used instead of Shadcn primitives. | Layout is broken; UI is non-responsive or unstyled. |
-| **UX & States** | Implements a clear Spinner for loading and a friendly "No Results" state for filters. | Implements a basic loading state (text), but lacks error or empty states. | UI "jumps" significantly when data loads. No visual feedback for user actions. | No loading or error handling; screen is blank until data arrives. |
-| **Code Quality** | Clean, commented code. Follows ESM standards. No console errors or warnings. | Readable code with minor linting issues or unused variables. | Variable naming is vague; some logic is redundant. | Multiple console errors; code is difficult to read or follow. |
+| Category | Excellent (4 pts) | Satisfactory (3 pts) | Developing (2 pts) |
+| --- | --- | --- | --- |
+| **Architecture** | Clear separation of Service, Hook, and UI. Uses `@/` aliases correctly. | Components are modular, but some logic is leaked into `App.jsx`. | Folder structure exists but is inconsistent. No service layer. |
+| **State & Context** | Context API manages Theme; persists to `localStorage`. No "white flash" on reload. | Context is used but doesn't persist or causes unnecessary re-renders. | Local state used for global needs; theme resets on refresh. |
+| **Custom Hooks** | `useProducts` manages loading/error and derives Collections via `useMemo`. | Hook handles fetching, but filtering logic is done in the UI layer. | Use of `useEffect` is present but contains complex, unoptimized logic. |
+| **UX & States** | Theme-aware Skeletons and a polished "Empty State." High attention to responsive grid. | Implements basic loading (text), but lacks error or empty states. | UI "jumps" significantly when data loads. No visual feedback. |
+| **Code Quality** | PascalCase used for Lucide icons. No console errors. Clean Tailwind v4 variants. | Readable code with minor linting issues or unused variables. | Variable naming is vague; some logic is redundant. |
 
 ---
 
-## Grading Guidelines for Instructors
+## 5. Grading Guidelines for Instructors
 
-1. **The "Vanish" Test:** Ask the student to swap the API from `DummyJSON` to another source. If they only have to change one file (`api.js`), they get full points for **Architecture**.
-2. **The "Slow 3G" Test:** Throttling the network in Chrome DevTools should trigger the **Spinner**. If the screen remains blank without a loader, deduct points in **UX & States**.
-3. **The "Console" Test:** Check for the `key` prop warning in the console. If students are mapping products without a unique `key={product.id}`, they fail a core React requirement.
+### The "Persistence" Test
+
+Set the app to **Dark Mode** and refresh. If the app reverts to Light Mode or "flashes" white briefly before switching back, deduct points in **State & Context**.
+
+### The "Memoization" Test
+
+Inspect `useProducts.js`. The `deals`, `newArrivals`, and `filteredProducts` arrays must be wrapped in `useMemo` to pass **Excellent**.
+
+### The "Safe Zone" Test
+
+View a product with a white background in **Dark Mode**. If the image bleeds harshly into the dark UI without a container, deduct points in **UX & States**.
+
+---
+
+## 6. Student Submission Checklist
+
+* [ ] Theme stays consistent after refreshing the page.
+* [ ] "Deals" and "New Arrivals" show the correct filtered products.
+* [ ] Product badges (Hot/New) appear correctly on cards.
+* [ ] All Lucide icons use PascalCase (e.g., `<Flame />`).
+* [ ] Mobile view is fully functional and responsive.
