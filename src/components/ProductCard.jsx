@@ -5,10 +5,10 @@ import { ShoppingCart, Eye, Heart, Star } from "lucide-react";
 import { QuickViewModal } from "./QuickViewModal";
 
 export const ProductCard = ({ product }) => (
-  <Card className="group flex flex-col h-full overflow-hidden border-slate-200 transition-all duration-300 hover:shadow-xl bg-white ring-1 ring-slate-200/50">
+  <Card className="group flex flex-col h-full overflow-hidden border-slate-200 dark:border-slate-800 transition-all duration-300 hover:shadow-xl bg-white dark:bg-slate-900 ring-1 ring-slate-200/50 dark:ring-white/5">
     <CardHeader className="p-0 relative">
-      {/* Product Image Container */}
-      <div className="aspect-square bg-[#f8f8f8] flex items-center justify-center overflow-hidden">
+      {/* Product Image Container - Darkened background for better contrast */}
+      <div className="aspect-square bg-[#f8f8f8] dark:bg-slate-800/50 flex items-center justify-center overflow-hidden">
         <img 
           src={product.thumbnail} 
           alt={product.title} 
@@ -19,7 +19,7 @@ export const ProductCard = ({ product }) => (
         <Button 
           variant="ghost" 
           size="icon" 
-          className="absolute top-2 right-2 rounded-full bg-white/80 backdrop-blur-sm text-slate-400 hover:text-rose-500 hover:bg-white shadow-sm"
+          className="absolute top-2 right-2 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm text-slate-400 hover:text-rose-500 hover:bg-white dark:hover:bg-slate-800 shadow-sm"
         >
           <Heart className="h-4 w-4" />
         </Button>
@@ -29,13 +29,15 @@ export const ProductCard = ({ product }) => (
           <QuickViewModal product={product}>
             <Button 
               type="button"
-              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-lg gap-2 px-4 h-9 text-xs"
+              className="rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 shadow-lg gap-2 px-4 h-9 text-xs"
             >
               <Eye className="h-3.5 w-3.5" /> Quick View
             </Button>
           </QuickViewModal>
         </div>
       </div>
+
+      {/* Discount Tag */}
       <div className="absolute top-0 left-0 bg-orange-500 text-white px-3 py-1 text-[11px] font-black tracking-tighter rounded-br-xl shadow-md">
         -{Math.round(product.discountPercentage)}%
       </div>
@@ -44,29 +46,29 @@ export const ProductCard = ({ product }) => (
     <CardContent className="p-4 flex-grow">
       {/* Category & Rating Row */}
       <div className="flex justify-between items-center mb-2">
-        <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider bg-orange-50 px-2 py-0.5 rounded">
+        <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider bg-orange-50 dark:bg-orange-500/10 px-2 py-0.5 rounded">
           {product.category}
         </span>
         <div className="flex items-center gap-1 text-amber-500">
           <Star className="h-3 w-3 fill-current" />
-          <span className="text-xs font-bold text-slate-700">{product.rating || '4.8'}</span>
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{product.rating || '4.8'}</span>
         </div>
       </div>
 
-      <CardTitle className="text-base font-bold text-slate-800 line-clamp-2 min-h-[2.5rem] mb-2 group-hover:text-orange-600 transition-colors">
+      <CardTitle className="text-base font-bold text-slate-800 dark:text-white line-clamp-2 min-h-[2.5rem] mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
         {product.title}
       </CardTitle>
 
       {/* Pricing Engine */}
       <div className="flex flex-col mt-auto">
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-black text-slate-900">${product.price}</span>
-          <span className="text-sm text-slate-400 line-through">
+          <span className="text-2xl font-black text-slate-900 dark:text-white">${product.price}</span>
+          <span className="text-sm text-slate-400 dark:text-slate-500 line-through">
             ${Math.round(product.price * (1.2))}
           </span>
         </div>
-        <p className="text-[11px] text-emerald-600 font-medium mt-1">
-          ✓ Free shipping on orders over $50
+        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">
+          ✓ Free shipping
         </p>
       </div>
     </CardContent>
