@@ -1,4 +1,4 @@
-# Product Catalog
+# Swift Shop
 
 A high-performance product discovery interface built with **React**, **Tailwind CSS v4**, and **Shadcn/UI**. This project demonstrates professional frontend architecture, including global state management via Context API, custom hooks for data orchestration, and custom Tailwind variants.
 
